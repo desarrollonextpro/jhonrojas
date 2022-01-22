@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_sale" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name='partner_shipping_id' position="after">
+                <field name="estimated_amount"/>
+                <field name="transfer_type_id"/>
+                <field name="anticipe_amount"/>
+                <field name="remainig_amount"/>
+            </field>
+        </field>
+    </record>
+</odoo>

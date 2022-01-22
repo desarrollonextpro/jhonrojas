@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="validation_custom_sale" model="base.automation">
+        <field name="name">Validation of custom sale</field>
+        <field name="active" eval="False"/>
+        <field name="model_id" ref="custom_sale.model_sale_order"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="state">code</field>
+        <field name="code">record.validation_custom_sale()</field>
+    </record>
+    <record id="asign_custom_sale" model="base.automation">
+        <field name="name">Asign of custom sale</field>
+        <field name="active" eval="True"/>
+        <field name="model_id" ref="custom_sale.model_sale_order"/>
+        <field name="trigger">on_change</field>
+        <field name="on_change_fields">estimated_amount,anticipe_amount</field>
+        <field name="state">code</field>
+        <field name="code">record.assign_value()</field>
+    </record>
+</odoo>

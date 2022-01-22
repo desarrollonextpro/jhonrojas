@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_custom_contacts" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='email']" position="after"> -->
+            <!-- <xpath expr="//sheet/group/group[2]/field[@name='email']" position="after">
+                <field name="category"/>
+                <field name="partner_id"/>
+                <field name="res_country_state_ids" widget='many2many_tags'/>
+                <field name="partner_email"/>
+            </xpath> -->
+            <field name="email" position="after">
+                <field name="category"/>
+                <field name="partner_id"/>
+                <field name="res_country_state_ids" widget='many2many_tags'/>
+                <field name="partner_email"/>
+            </field>
+        </field>
+    </record>
+</odoo>
