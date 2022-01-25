@@ -1,5 +1,9 @@
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
+import logging
+
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -61,6 +65,8 @@ class SaleOrder(models.Model):
 
         products = self.order_line.mapped('product_id')
         unique_products = set(products)
+
+        _logger.info("\n\n\nMOSTRAR DATOS %s\n\n\n", [unique_products, products])
 
         if len(unique_products) != len(products):
             raise ValidationError('Error. 4')
