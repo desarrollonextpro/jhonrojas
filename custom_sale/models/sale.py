@@ -68,7 +68,7 @@ class SaleOrder(models.Model):
 
         _logger.info("\n\n\nMOSTRAR DATOS %s\n\n\n", [unique_products, products])
 
-        if len(unique_products) != len(products):
+        if len(unique_products) != len(self.order_line):
             raise ValidationError('Error. 4')
 
         if self.anticipe_amount > self.estimated_amount:
