@@ -67,6 +67,7 @@ class SaleOrder(models.Model):
         unique_products = set(products)
 
         _logger.info("\n\n\nMOSTRAR DATOS %s\n\n\n", [unique_products, products])
+        _logger.info("\n\n\nMOSTRAR DATOS %s\n\n\n", [len(unique_products), len(self.order_line)])
 
         if len(unique_products) != len(self.order_line):
             raise ValidationError('Error. 4')
