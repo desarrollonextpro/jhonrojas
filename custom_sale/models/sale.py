@@ -63,7 +63,7 @@ class SaleOrder(models.Model):
             if order_line.product_uom_qty > 10:
                 raise ValidationError('Error. 3')
 
-        products = self.order_line.mapped('product_id')
+        products = self.order_line.mapped('product_id.id')
         unique_products = set(products)
 
         _logger.info("\n\n\nMOSTRAR DATOS %s\n\n\n", [unique_products, products])
