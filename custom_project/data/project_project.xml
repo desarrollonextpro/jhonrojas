@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="custom_task_test" model="project.project">
+        <field name="name">Test</field>
+    </record>
+</odoo>

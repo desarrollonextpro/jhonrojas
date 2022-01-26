@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stage_one" model="project.task.type">
+        <field name="name">Solicitado</field>
+        <field name="project_ids" eval="[(4,ref('custom_project.custom_task_test'))]"/>
+    </record>
+    <record id="stage_two" model="project.task.type">
+        <field name="name">En proceso</field>
+        <field name="project_ids" eval="[(4,ref('custom_project.custom_task_test'))]"/>
+    </record>
+    <record id="stage_tree" model="project.task.type">
+        <field name="name">Terminado</field>
+        <field name="project_ids" eval="[(4,ref('custom_project.custom_task_test'))]"/>
+    </record>
+</odoo>

@@ -1,19 +1,19 @@
 {
-    'name': 'Custom Sale',
+    'name': 'Custom Project',
     'version': '1.0',
-    'description': 'custom sale',
+    'description': 'Custom Project',
     'author': 'Jhon Jairo Rojas Ortiz',
     'license': 'LGPL-3',
     'depends': [
-        'sale', 'base_automation', 'project'
+        'sale', 'project', 'base_automation'
     ],
     'data': [
-        'security/ir_model_access.xml',
+        'data/project_project.xml',
+        'data/project_task_type.xml',
         'data/base_automation.xml',
-        'views/transfer_type.xml',
+        'views/project_task.xml',
         'views/sale.xml'
     ],
     'auto_install': False,
     'application': False,
-
 }
