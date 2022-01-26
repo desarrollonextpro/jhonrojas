@@ -1,9 +1,5 @@
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
-import logging
-
-
-_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -52,31 +48,31 @@ class SaleOrder(models.Model):
 
     def validation_custom_sale(self):
         if self.order_type == 'normal' and self.estimated_amount <= 100:
-            raise ValidationError('Error. 0')
+            raise ValidationError('El monto estimado no es mayor a 100.')
         elif self.order_type == 'especial' and self.estimated_amount <= 1000:
-            raise ValidationError('Error. 1')
+            raise ValidationError('El monto estimado no es mayor a 1000.')
 
         if len(self.order_line) > 3:
-            raise ValidationError('Error. 2')
+            raise ValidationError('La cantidad de líneas ingresas es mayor a 3.')
 
         for order_line in self.order_line:
             if order_line.product_uom_qty > 10:
-                raise ValidationError('Error. 3')
+                raise ValidationError('No puede comprar más de 10  artículos por línea en una misma orden de venta.')
 
         products = self.order_line.mapped('product_id.id')
         unique_products = set(products)
 
         if len(unique_products) != len(self.order_line):
-            raise ValidationError('Error. 4')
+            raise ValidationError('Hay artículos (productos) repetidos en otras líneas.')
 
         if self.anticipe_amount > self.estimated_amount:
-            raise ValidationError('Error. 5')
+            raise ValidationError('El monto anticipado es mayor al monto estimado.')
 
         if self.partner_shipping_id and self.partner_shipping_id.type != 'delivery':
-            raise ValidationError('Error. 6')
+            raise ValidationError('La dirección de envío no es de tipo envío')
 
         if self.partner_invoice_id and self.partner_invoice_id.type != 'invoice':
-            raise ValidationError('Error. 7')
+            raise ValidationError('La dirección de facturación no es de tipo factura')
 
     def assign_value(self):
         self.remainig_amount = self.estimated_amount - self.anticipe_amount

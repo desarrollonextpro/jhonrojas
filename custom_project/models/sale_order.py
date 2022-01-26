@@ -1,8 +1,4 @@
 from odoo import fields, models, api
-import logging
-
-
-_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -19,17 +15,6 @@ class SaleOrder(models.Model):
             'project_id': self.env.ref('custom_project.custom_task_test').id,
             'stage_id': self.env.ref('custom_project.stage_one').id,
         }
-
-        # TODO: por verificar si funciona ref como imagino
-
-        _logger.info(f"""
-                     
-                     
-                     RECORD: {record}
-                     ID: {self.env.ref('custom_project.stage_one').id}                     
-                     MORE INFO: {self.env.ref('custom_project.stage_one')}                     
-                     
-                     """)
 
         project_task = self.env['project.task'].sudo().create(record)
 
