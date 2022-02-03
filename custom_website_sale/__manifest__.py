@@ -8,7 +8,7 @@
     'license': 'LGPL-3',
     'category': '',
     'depends': [
-        'website_sale', 'purchase'
+        'website_sale', 'purchase', 'custommodule'
     ],
     'data': [
         'report/purchase_order_template.xml',

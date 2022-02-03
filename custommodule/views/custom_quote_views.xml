@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <!-- Productos de cotizacion -->	
+	    <record id="view_custommodule_quote_products_tree" model="ir.ui.view">
+            <field name="name">Productos de cotización</field>
+            <field name="model">custommodule.quote.products</field>
+            <field name="arch" type="xml">
+                <tree string="Productos de cotización">
+                    <field name="product_tmpl_id"/>
+                    <field name="quote_size"/>
+                    <field name="quote_quantity"/>
+                    <field name="quote_unit_case"/>
+                    <field name="quote_price"/>
+                    <field name="id_erp"/>
+                </tree>
+            </field>
+	    </record>        
+	    <record id="view_custommodule_quote_products_form" model="ir.ui.view">
+            <field name="name">Productos de cotización</field>
+            <field name="model">custommodule.quote.products</field>            
+            <field name="arch" type="xml">
+                <form string="Productos de cotización">
+                <sheet>
+                    <group>
+                        <field name="product_tmpl_id"/>
+                        <field name="quote_size"/>
+                        <field name="quote_quantity"/>
+                        <field name="quote_unit_case"/>
+                        <field name="quote_price"/>
+                        <field name="id_erp"/>
+                    </group>
+                </sheet>                
+                </form>	
+            </field>
+	    </record>        
+
+	    <record model="ir.actions.act_window" id="custommodule.quote_products_action">
+		    <field name="name">Productos de cotización</field>
+		    <field name="res_model">custommodule.quote.products</field>
+		    <field name="view_mode">tree,form</field>
+	    </record>
+
+        <!-- Menu -->
+
+        <!--SUBSUBMENU: PLANTILLAS DE CONFIGURACION -->
+        <record id="custommodule.menu_settings_quote_productos" model="ir.ui.menu">
+            <field name="name">Productos de cotización</field>
+            <field name="action" ref="custommodule.quote_products_action"/>
+            <field name="parent_id" ref="website.menu_website_global_configuration"/>
+        </record>
+
+
+        <!--VISTA DE PRODUCTOS DE COTIZACION -->
+        <record id="product_template_quote_products_form_view" model="ir.ui.view">
+            <field name="name">custommodule.product.template.quote.products.form.view</field>
+            <field name="model">product.template</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                <page string="Productos de cotización">
+                        <group>
+                            <field name="quote_product_ids"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

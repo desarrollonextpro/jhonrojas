@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    
+    <data>
+        <record id="sale.portal_my_home_sale" model="ir.ui.view">
+            <field name="arch" type="xml">
+                <data name="Portal My Home : sales entries" inherit_id="portal.portal_my_home" priority="20">
+                    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                        <t t-if="quotation_count" t-call="portal.portal_docs_entry">
+                            <t t-set="title">Cotizaciones/Pedidos pendientes</t>
+                            <t t-set="url" t-value="'/my/quotes'"/>
+                            <t t-set="count" t-value="quotation_count"/>
+                        </t>
+                        <t t-if="order_count" t-call="portal.portal_docs_entry">
+                            <t t-set="title">Pedidos de venta confirmados</t>
+                            <t t-set="url" t-value="'/my/orders'"/>
+                            <t t-set="count" t-value="order_count"/>
+                        </t>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+         <record id="account.portal_my_home_invoice" model="ir.ui.view">
+            <field name="arch" type="xml">
+                <data name="Portal My Home : invoice entries" inherit_id="portal.portal_my_home" priority="30">
+                    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                        <!--<t t-if="invoice_count" t-call="portal.portal_docs_entry">
+                            <t t-set="title">Invoices &amp; Bills</t>
+                            <t t-set="url" t-value="'/my/invoices'"/>
+                            <t t-set="count" t-value="invoice_count"/>
+                        </t>-->
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="sale.portal_my_quotations" model="ir.ui.view">
+            <field name="arch" type="xml">
+                <t name="Mis pedidos" t-name="sale.portal_my_quotations">
+                    <t t-call="portal.portal_layout">
+                        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                        <t t-call="portal.portal_searchbar">
+                            <t t-set="title">Cotizaciones/Pedidos pendientes</t>
+                        </t>
+                        <t t-if="not quotations">
+                            <p>There are currently no quotations for your account.</p>
+                        </t>
+                        <t t-if="quotations" t-call="portal.portal_table">
+                            <thead>
+                                <tr class="active">
+                                    <th>Cotizacion/Pedido #</th>
+                                    <th class="text-right">Fecha de pedido</th>
+                                    <!--<th class="text-right">Valid Until</th>-->
+                                    <th class="text-right">Estado</th>
+                                    <th class="text-center"/>
+                                    <th class="text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <t t-foreach="quotations" t-as="quotation">
+                                <tr>
+                                    <td><a t-att-href="quotation.get_portal_url()"><t t-esc="quotation.name"/></a></td>
+                                    <td class="text-right"><span t-field="quotation.date_order"/></td>
+                                    <td class="text-right">
+                                        <span t-if="quotation.is_quote" t-field="quotation.state_quote"/>
+                                        <span t-if="not quotation.is_quote" t-field="quotation.state"/>
+                                    </td>
+                                    <!--<td class="text-right"><span t-field="quotation.validity_date"/></td>
+                                    <td class="text-center">
+                                        <span t-if="quotation.state == 'cancel'" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-remove"/> Cancelled</span>
+                                        <span t-if="quotation.is_expired" class="badge badge-pill badge-secondary"><i class="fa fa-fw fa-clock-o"/> Expired</span>
+                                    </td>-->
+                                    <td class="text-right">
+                                        <span t-field="quotation.amount_total"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </t>
+                </t>
+            </field>
+        </record>
+
+
+    </data>
+
+</openerp>

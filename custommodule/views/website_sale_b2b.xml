@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- CAMPOS DE FORMULARIO DE CLIENTE -->
+    <template inherit_id="website_sale.address" id="custom_website_sale_address">
+        <data inherit_id="address" name="Custom fiscal information fields" customize_show="True">
+            <xpath expr="//div[@class='col-12 col-xl order-xl-1 oe_cart'][1]/div[1]/t[4]" position="replace">
+                <t t-if="partner_id == website_sale_order.partner_shipping_id.id == website_sale_order.partner_invoice_id.id">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">¡Esté atento!</h4>
+                        <p>
+                            ¡Está editando su dirección de <b>facturación y envío</b> al mismo tiempo!<br/>
+                            Si desea modificar su dirección de envío, cree una nueva dirección.
+                        </p>
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//form[@class='checkout_autoformat'][1]" position="replace">
+            <form action="/shop/address" method="post" class="checkout_autoformat">
+                <div class="form-row">
+
+                    <div class="w-100"/>
+                    <t t-if="(mode[0] == 'new' or mode[0] == 'edit') and (mode[1] == 'billing')">
+                        <h5 class="o_page_header mt8">Datos de contacto</h5>
+                        <div class="w-100"/>
+                        <div t-attf-class="form-group  col-lg-6" id="div_first_name">
+                            <label class="col-form-label" for="first_name">Nombres</label>
+                            <input type="text" name="first_name" t-attf-class="form-control " t-att-value="'first_name' in checkout and checkout['first_name']" t-att-readonly="'1' if 'vat' in checkout and checkout['vat'] and not can_edit_vat else None"/>
+                        </div>
+                        <div t-attf-class="form-group  col-lg-6" id="div_last_name">
+                            <label class="col-form-label" for="last_name">Apellidos</label>
+                            <input type="text" name="last_name" t-attf-class="form-control " t-att-value="'last_name' in checkout and checkout['last_name']" t-att-readonly="'1' if 'vat' in checkout and checkout['vat'] and not can_edit_vat else None"/>
+                        </div>
+                        
+                        <div class="w-100"/>
+                        <div t-attf-class="form-group #{error.get('email') and 'o_has_error' or ''} col-lg-6" id="div_email">
+                            <label class="col-form-label" for="email">Correo electrónico</label>
+                            <input type="email" name="email" t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}" t-att-value="'email' in checkout and checkout['email']"/>
+                        </div>
+                        <div t-attf-class="form-group #{error.get('phone') and 'o_has_error' or ''} col-lg-6" id="div_phone">
+                            <label class="col-form-label" for="phone">Telefono/Celular</label>
+                            <input type="tel" maxlength="20" name="phone" requerid="true" t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}" t-att-value="'phone' in checkout and checkout['phone']"/>
+                        </div>
+
+                        <h5 class="o_page_header mt8">Datos de facturación</h5>
+                        <div class="w-100"/>
+                        <div t-attf-class="form-group col-lg-6 div_identification_type_id">
+                            <label class="col-form-label" for="identification_type_id">Tipo de identificación</label>
+                            <t t-set="identification_type_ids" t-value="request.env['custommodule.identification.type'].sudo().search([('active','=',True)])"/>
+                            <select id="identification_type_id" name="identification_type_id" t-attf-class="form-control " t-att-disabled="'1' if 'vat' in checkout and checkout['vat'] and not can_edit_vat else None">
+                                <t t-foreach="identification_type_ids" t-as="c">
+                                    <t t-if="(mode[0] == 'edit') and (mode[1] == 'billing')">
+                                        <option t-att-value="c.id" t-att-data-name="c.name" t-att-selected="c.name == ('identification_type_id' in checkout and ('name' in checkout['identification_type_id'] and checkout['identification_type_id']['name'] ))">
+                                            <t t-esc="c.description"/>
+                                        </option>
+                                    </t>
+                                    <t t-if="(mode[0] == 'new') and (mode[1] == 'billing')">
+                                        <option t-att-value="c.id" t-att-data-name="c.name" >
+                                            <t t-esc="c.description"/>
+                                        </option>
+                                    </t>
+                                </t>
+                            </select>
+                        </div>
+
+                        <div t-attf-class="form-group col-lg-6 div_vat">
+                            <label class="col-form-label font-weight-normal label-optional" for="vat">Cédula/RUC</label>
+                            <input type="text" name="vat" t-attf-class="form-control #{error.get('vat') and 'is-invalid' or ''}" t-att-value="'vat' in checkout and checkout['vat']" t-att-readonly="'1' if 'vat' in checkout and checkout['vat'] and not can_edit_vat else None" t-att-title="'Changing VAT number is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.' if 'vat' in checkout and checkout['vat'] and not can_edit_vat else None"/>
+                        </div>
+
+                        <div class="w-100"/>
+                        <div t-attf-class="form-group #{error.get('name') and 'o_has_error' or ''} col-lg-12 div_name">
+                            <label class="col-form-label" for="name">Nombre completo/Razón Social</label>
+                            <input type="text" name="name" t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}" t-att-value="'name' in checkout and checkout['name']" t-att-readonly="'1' if 'vat' in checkout and checkout['vat'] and not can_edit_vat else None"/>
+                        </div>
+                    </t>
+                    <t t-if="(mode[0] == 'new' or mode[0] == 'edit') and (mode[1] == 'shipping')">
+                        <div t-attf-class="form-group #{error.get('name') and 'o_has_error' or ''} col-lg-12 div_name">
+                            <label class="col-form-label" for="name">Nombre/Etiqueta</label>
+                            <input type="text" name="name" t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}" t-att-value="'name' in checkout and checkout['name']"/>
+                        </div>
+                        <div class="w-100"/>
+                        <div t-attf-class="form-group #{error.get('phone') and 'o_has_error' or ''} col-lg-6" id="div_phone">
+                            <label class="col-form-label" for="phone">Telefono/Celular</label>
+                            <input type="tel" maxlength="20" requerid="true" name="phone" t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}" t-att-value="'phone' in checkout and checkout['phone']"/>
+                        </div>
+                    </t>
+
+
+                    <div class="w-100"/>
+                    <div t-attf-class="form-group #{error.get('street') and 'o_has_error' or ''} col-lg-12 div_street">
+                        <label class="col-form-label" for="street">Calle <span class="d-none d-md-inline"> y  Número</span></label>
+                        <input required="required" type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="'street' in checkout and checkout['street']"/>
+                    </div>
+                    <div t-attf-class="form-group #{error.get('street2') and 'o_has_error' or ''} col-lg-12 div_street2">
+                        <label class="col-form-label label-optional" for="street2">Calle 2</label>
+                        <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']"/>
+                    </div>
+                    <div class="w-100"/>
+                    <t t-set="zip_city" t-value="country and [x for x in country.get_address_fields() if x in [&quot;zip&quot;, &quot;city&quot;]] or [&quot;city&quot;, &quot;zip&quot;]"/>
+                    <t t-if="'zip' in zip_city and zip_city.index('zip') &lt; zip_city.index('city')">
+                        <div t-attf-class="form-group #{error.get('zip') and 'o_has_error' or ''} col-md-4 div_zip">
+                            <label class="col-form-label label-optional" for="zip">Zip Code</label>
+                            <input type="text" name="zip" t-attf-class="form-control #{error.get('zip') and 'is-invalid' or ''}" t-att-value="'zip' in checkout and checkout['zip']"/>
+                        </div>
+                    </t>
+                    <div t-attf-class="form-group #{error.get('city') and 'o_has_error' or ''} col-md-8 div_city">
+                        <label class="col-form-label" for="city">Ciudad</label>
+                        <input required="required" type="text" name="city" t-attf-class="form-control #{error.get('city') and 'is-invalid' or ''}" t-att-value="'city' in checkout and checkout['city']"/>
+                    </div>
+                    <t t-if="'zip' in zip_city and zip_city.index('zip') &gt; zip_city.index('city')">
+                        <div t-attf-class="form-group #{error.get('zip') and 'o_has_error' or ''} col-md-4 div_zip">
+                            <label class="col-form-label label-optional" for="zip">Código postal</label>
+                            <input type="text" name="zip" t-attf-class="form-control #{error.get('zip') and 'is-invalid' or ''}" t-att-value="'zip' in checkout and checkout['zip']"/>
+                        </div>
+                    </t>
+                    <div class="w-100"/>
+                    <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-lg-6 div_country">
+                        <label class="col-form-label" for="country_id">Pais</label>
+                        <select id="country_id" name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
+                            <option value="">Pais...</option>
+                            <t t-foreach="countries" t-as="c">
+                                <option t-att-value="c.id" t-att-selected="c.id == (country and country.id or -1)">
+                                    <t t-esc="c.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div t-attf-class="form-group #{error.get('state_id') and 'o_has_error' or ''} col-lg-6 div_state" t-att-style="(not country or not country.state_ids) and 'display: none'">
+                        <label class="col-form-label" for="state_id">Provincia</label>
+                        <select name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}" data-init="1">
+                            <option value="">Provincia...</option>
+                            <t t-foreach="country and country.state_ids or []" t-as="s">
+                                <option t-att-value="s.id" t-att-selected="s.id == ('state_id' in checkout and country and checkout['state_id'] != '' and int(checkout['state_id']))">
+                                    <t t-esc="s.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="w-100"/>
+                    <t t-if="mode == ('new', 'billing') and not only_services">
+                        <div class="col-lg-12">
+                            <div class="checkbox">
+                                <label>
+                                <input type="checkbox" id="shipping_use_same" class="mr8" name="use_same" value="1" checked="checked"/>Enviar a la misma dirección
+                                <span class="ship_to_other text-muted" style="display: none">&amp;nbsp;(<i>Su dirección de envío será solicitada más tarde) </i></span>
+                                </label>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <input type="hidden" id="modeaddress" name="mode" t-att-value="mode[1]"/>
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="submitted" value="1"/>
+                <input type="hidden" name="partner_id" t-att-value="partner_id or '0'"/>
+                <input type="hidden" name="callback" t-att-value="callback"/>
+                <!-- Example -->
+                <input type="hidden" name="field_required" t-att-value="'phone,name'"/>
+
+                <div class="d-flex justify-content-between">
+                    <a role="button" t-att-href="mode == ('new', 'billing') and '/shop/cart' or '/shop/checkout'" class="btn btn-secondary mb32">
+                        <i class="fa fa-chevron-left"/>
+                        <span>Volver</span>
+                    </a>
+                    <a role="button" id="btn-primary" href="#" class="btn btn-primary mb32 a-submit-fiscal-info a-submit-disable a-submit-loading">
+                        <span>Siguiente</span>
+                        <i class="fa fa-chevron-right"/>
+                    </a>
+                </div>
+            </form>
+           </xpath> 
+        </data>
+    </template>
+
+    <!-- CAMPOS DE DATOS DE PORTAL -->
+    <template inherit_id="portal.portal_my_details" id="custom_portal_portal_my_details">
+        <data inherit_id="portal.portal_my_details" name="Disabled fiscal information fields" customize_show="True">
+
+            <xpath expr="//div[@class='row'][1]/div[2]" position="replace">
+                <div t-attf-class="form-group #{error.get('name') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label" for="name">Nombre</label>
+                    <input type="text" name="name" t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}" t-att-value="name or partner.name" t-att-readonly="'1'"/>
+                </div>
+            </xpath> 
+
+            <xpath expr="//div[3]" position="replace">
+                <div t-attf-class="form-group #{error.get('email') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label" for="email">Correo electrónico</label>
+                    <input type="email" name="email" t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}" t-att-value="email or partner.email" t-att-readonly="'1'"/>
+                </div>
+            </xpath> 
+
+            <xpath expr="//div[6]" position="replace">
+                <div t-attf-class="form-group #{error.get('vat') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label label-optional" for="vat">RUC/Cédula</label>
+                    <input type="text" name="vat" t-attf-class="form-control #{error.get('vat') and 'is-invalid' or ''}" t-att-value="vat or partner.vat" t-att-readonly="'1'" t-att-title="None if partner.can_edit_vat() else 'Changing VAT number is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.'"/>
+                </div>
+            </xpath> 
+            <xpath expr="//div[7]" position="replace">
+                <div t-attf-class="form-group #{error.get('phone') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label" for="phone">Telefono</label>
+                    <input type="tel" maxlength="20" name="phone" t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}" t-att-value="phone or partner.phone" t-att-readonly="'1'" />
+                </div>
+            </xpath> 
+            <xpath expr="//div[9]" position="replace">
+                <div t-attf-class="form-group #{error.get('street') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label" for="street">Calle/Dirección</label>
+                    <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street" t-att-readonly="'1'" />
+                </div>
+            </xpath> 
+            <xpath expr="//div[10]" position="replace">
+                <div t-attf-class="form-group #{error.get('city') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label" for="city">Ciudad</label>
+                    <input type="text" name="city" t-attf-class="form-control #{error.get('city') and 'is-invalid' or ''}" t-att-value="city or partner.city" t-att-readonly="'1'" />
+                </div>
+            </xpath> 
+            
+            <xpath expr="//div[12]" position="replace">
+                <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label" for="country_id">Pais</label>
+                    <select name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}" t-att-disabled="'1'">
+                        <option value="">Pais...</option>
+                        <t t-foreach="countries or []" t-as="country">
+                            <option t-att-value="country.id" t-att-selected="country.id == int(country_id) if country_id else country.id == partner.country_id.id">
+                                <t t-esc="country.name"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </xpath> 
+            
+            <xpath expr="//div[13]" position="replace">
+                <div t-attf-class="form-group #{error.get('state_id') and 'o_has_error' or ''} col-xl-6">
+                    <label class="col-form-label label-optional" for="state_id">Provincia</label>
+                    <select name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}" t-att-disabled="'1'">
+                        <option value="">Seleccionar...</option>
+                        <t t-foreach="states or []" t-as="state">
+                            <option t-att-value="state.id" style="display:none;" t-att-data-country_id="state.country_id.id" t-att-selected="state.id == partner.state_id.id">
+                                <t t-esc="state.name"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </xpath>
+            
+            <xpath expr="//button[@class='btn btn-primary float-right mb32 '][1]" position="replace">
+            </xpath> 
+
+            <xpath expr="//div[@class='alert alert-danger'][1]" position="replace">
+                <div class="alert alert-warning" role="alert">
+                    <p>
+                        Sus dataos de <b>facturación y envío</b><br/>
+                        Serán solicitados antes de pagar el pedido.
+                    </p>
+                </div>
+            </xpath> 
+
+            <xpath expr="//div[11]" position="replace">
+            </xpath> 
+            
+            <xpath expr="//div[5]" position="replace">
+            </xpath> 
+        </data>
+    </template>
+</odoo>

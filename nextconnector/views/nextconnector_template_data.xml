@@ -1,0 +1,199 @@
+
+<odoo>
+<data noupdate="1">
+    <!--  CLIENTES -->
+    <record id="nextconnector_template_data_create_or_update_res_partner" model="nextconnector.template_data">
+        <field name="code">set_customer</field>
+        <field name="description">NextConnector - Clientes</field>
+        <field name="model" ref="account.model_res_partner"/>
+        <field name="template_content">
+pay_term = record.env["account.payment.term"].search([('id','=',record.property_payment_term_id.id)])
+json_data = {
+    "id": record.vat,
+    "record_type": "customer",
+    "fields": [
+        {"name": "CardType","value": "2"},
+        {"name": "CardCode","value": record.vat if record.vat else "" },
+        {"name": "CardName","value": record.name if record.name else ""  },
+        {"name": "LicTradNum","value": record.vat if record.vat else ""  },
+        {"name": "E_Mail","value": record.email if record.email else "" },
+        {"name": "Phone1","value": record.phone if record.phone else ""  },
+        {"name": "Cellular","value": record.mobile if record.mobile else ""  },
+        {"name": "Currency","value": "$"},
+        {"name": "GroupNum","value": pay_term.nxt_id_erp if pay_term.nxt_id_erp else ""  }
+    ]
+}
+        </field>
+    </record>
+
+
+    <!--  ORDEN DE VENTA -->
+    <record id="nextconnector_template_data_create_or_update_sale_order" model="nextconnector.template_data">
+        <field name="code">set_sale_order</field>
+        <field name="description">NextConnector - Orden de venta</field>
+        <field name="model" ref="sale.model_sale_order"/>
+        <field name="template_content">
+import datetime
+#_logger.info("Fecha :" + str(record.date_order))
+
+#CONVIERTE A FECHA UTC-5 ECUADOR      
+date_order = record.date_order + datetime.timedelta(hours=-5)
+#commitment_date = record.commitment_date + datetime.timedelta(hours=-5)
+
+json_data = { 
+"id": record.name ,
+"record_type": "17",#SALES ORDER
+"fields": [
+    #{"name": "Series","value": "225"},
+    {"name": "CardCode","value": record.partner_id.nxt_id_erp if record.partner_id.nxt_id_erp else record.partner_id.vat},
+    #{"name": "CardCode","value": record.partner_id.vat},
+    {"name": "NumAtCard","value": record.name},
+    {"name": "CardName","value": record.partner_id.name},
+    {"name": "Comments","value": record.name},
+    {"name": "DocDate","value": date_order.strftime("%Y-%m-%d")},
+    {"name": "DocDueDate","value": date_order.strftime("%Y-%m-%d")},
+    {"name": "U_SYP_HORA_ENTR","value": "-"}
+    #{"name": "StreetS","value": record.partner_shipping_id.street}
+],
+"sublists": []
+}
+
+#DIRECCIONES 
+address = []
+address.append({
+    "line_id": "address_1",
+    "fields": [
+        {"name": "BillToStreet","value": record.partner_invoice_id.street if record.partner_invoice_id.street else ""},
+        {"name": "ShipToStreet","value": record.partner_shipping_id.street if record.partner_shipping_id.street else ""}
+    ]
+})
+
+json_data["sublists"].append({"sublist_id": "address", "lines": address})
+
+
+#AQUI VA EL DETALLE DEL DOCUMENTO
+lines = []
+
+for line in record.order_line:
+    for tax in line.tax_id:
+        tax_id = tax
+    lines.append({
+    "line_id": "items_"+str(line.id),
+    "fields": [
+        {"name": "ItemCode","value": line.product_id.nxt_id_erp},
+        {"name": "Quantity","value": line.product_uom_qty,"type": "float"},
+        {"name": "Price","value": line.price_unit,"type": "float"},
+        {"name": "PriceBefDi","value": line.price_unit,"type": "float"},
+        {"name": "DiscPrcnt","value": line.discount,"type": "float"},
+        {"name": "U_SYP_ETIQT_IMP","value": "1"}
+        #{"name": "TaxCode","value": tax_id.nxt_id_erp}
+    ]
+    })
+json_data["sublists"].append({"sublist_id": "items", "lines": lines})
+        </field>
+    </record>
+
+    <!--  FACTURA DE VENTA -->
+    <record id="nextconnector_template_data_create_or_update_account_move" model="nextconnector.template_data">
+        <field name="code">set_invoice</field>
+        <field name="description">NextConnector - Factura de venta</field>
+        <field name="model" ref="account.model_account_move"/>
+        <field name="template_content">
+import datetime
+#_logger.info("Fecha :" + str(record.invoice_date))
+
+#CONVIERTE A FECHA UTC-5 ECUADOR      
+invoice_date = record.invoice_date + datetime.timedelta(hours=-5)
+
+doc_origin = record.env["sale.order"].search([('name', '=', record.invoice_origin)])
+json_data = { 
+    "id": record.name ,
+    "record_type": "13",#INVOICES
+    "fields": [
+        {"name": "DocDate","value": "2020-01-01"},
+        {"name": "DocDueDate","value": "2020-01-01"},
+        #{"name": "DocDate","value": invoice_date.strftime("%Y-%m-%d")},
+        #{"name": "DocDueDate","value": invoice_date.strftime("%Y-%m-%d")},
+        {"name": "isIns","value": "1" ,"type": "enum", "enumtype":"BoYesNoEnum"},#INDICO SI ES FACTURA DE RESERVA
+        {"name": "CardCode","value": record.partner_id.nxt_id_erp if record.partner_id.nxt_id_erp else record.partner_id.vat},
+        {"name": "NumAtCard","value": record.name},
+        {"name": "CardName","value": record.partner_id.name},
+        {"name": "Comments","value": record.name}
+    ],
+    "sublists": []
+}
+
+lines = []
+count_line = 0
+for line in record.invoice_line_ids:
+    for tax in line.tax_ids:
+        tax_id = tax
+    lines.append({
+        "line_id": "items_"+str(line.id),
+        "fields": [
+            {"name": "ItemCode","value": line.product_id.default_code},
+            {"name": "Quantity","value": line.quantity,"type": "float"},
+            {"name": "Price","value": line.price_unit,"type": "float"},
+            {"name": "PriceBefDi","value": line.price_unit,"type": "float"},
+            {"name": "DiscPrcnt","value": line.discount,"type": "float"},    
+            {"name": "TaxCode","value": tax_id.nxt_id_erp},
+            {"name": "BaseEntry","value": doc_origin.nxt_id_erp},
+            {"name": "BaseType","value": 17, "type":"enum", "enumtype":"BoObjectTypes"},
+            {"name": "BaseLine","value": count_line, "type": "int"}
+        ]
+    })
+    count_line += 1
+json_data["sublists"].append({"sublist_id": "items", "lines": lines})
+        </field>
+    </record>
+
+
+    <!--  PAGO DE CLIENTES -->
+    <record id="nextconnector_template_data_create_or_update_account_payment" model="nextconnector.template_data">
+        <field name="code">set_payment</field>
+        <field name="description">NextConnector - Pago de clientes</field>
+        <field name="model" ref="account.model_account_payment"/>
+        <field name="template_content">
+import datetime
+#_logger.info("Fecha :" + str(record.payment_date))
+#CONVIERTE A FECHA UTC-5 ECUADOR      
+payment_date = record.payment_date + datetime.timedelta(hours=-5)
+
+json_data = { 
+    "id": record.name ,
+    "record_type": "24",#PAGO
+    "fields": [
+        {"name": "DocDate","value": "2020-01-01"},
+        #{"name": "DocDate","value": payment_date.strftime("%Y-%m-%d")},
+        #{"name": "DocDueDate","value": payment_date.strftime("%Y-%m-%d")},
+        {"name": "DocType","value": "0" ,"type": "enum", "enumtype":"BoRcptTypes"},#rCustomer = 0, rAccount = 1, rSupplier = 2
+        {"name": "CardCode","value": record.partner_id.nxt_id_erp if record.partner_id.nxt_id_erp else record.partner_id.vat},
+        {"name": "CounterRef","value": record.journal_id.name[0:8]},
+        {"name": "CardName","value": record.partner_id.name},
+        {"name": "Comments","value": str(record.journal_id.name) + " " + record.name + " " + record.communication },
+        {"name": "TrsfrDate","value": payment_date.strftime("%Y-%m-%d")},
+        {"name": "TrsfrAcct","value": record.journal_id.nxt_id_erp},
+        {"name": "TrsfrRef","value": record.payment_transaction_id.acquirer_reference if record.payment_transaction_id.acquirer_reference else ""},
+        {"name": "TrsfrSum","value": record.amount, "type": "float"}
+    ],
+    "sublists": []
+}
+
+#PAGO DE FACTURAS
+#lines = []
+#count_line = 0
+#for line in record.invoice_ids:
+#    lines.append({
+#        "line_id": "items_"+str(count_line),
+#        "fields": [
+#            {"name": "DocEntry","value": line.nxt_id_erp },
+#            {"name": "SumApplied","value": line.amount_total ,"type": "float"},    
+#            {"name": "InvType","value": 13, "type":"enum", "enumtype":"BoRcptInvTypes"}
+#        ]
+#    })
+#    count_line += 1
+#json_data["sublists"].append({"sublist_id": "lines", "lines": lines})
+        </field>
+    </record>
+</data>
+</odoo>

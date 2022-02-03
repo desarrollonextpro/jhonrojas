@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- REFERENCIA EXTRA DEL CLIENTE -->
+    <template id="website_sale_custo_extra_info" inherit_id="website_sale.extra_info">
+        <xpath expr="//form[@class='s_website_form container-fluid'][1]" position="replace">
+            <form action="/website_form/" method="post" class="s_website_form container-fluid" enctype="multipart/form-data" data-force_action="shop.sale.order" data-model_name="sale.order" data-success_page="/shop/payment">
+                <div class="form-group row form-field o_website_form_custom">
+                    <div class="col-lg-3 col-md-4 text-md-right">
+                        <label class="col-form-label" for="client_order_ref">Comentarios del pedido:</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8">
+                        <textarea type="text" class="form-control o_website_form_input" name="client_order_ref" required="true"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-3 col-md-4">
+                    </div>
+                    <div class="col-lg-9 col-md-8">
+                        <a role="button" href="/shop/checkout" class="btn btn-secondary mb32 float-left"><span class="fa fa-chevron-left"/> Previo</a>
+                        <a role="button" class="btn btn-primary float-right mb32 o_website_form_send" href="/shop/confirm_order">Siguiente <span class="fa fa-chevron-right"/></a>
+                    </div>
+                </div>
+            </form>
+        </xpath>
+    </template>
+
+    <template id="assets_frontend" inherit_id="website.assets_frontend">
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/custommodule/static/src/js/website_sale.js"></script>
+            <!--<script type="text/javascript" src="/custommodule/static/src/js/website_sale_b2b.js"></script>-->
+            <script type="text/javascript" src="/custommodule/static/src/js/website_sale_quote.js"></script>
+        </xpath>
+    </template>
+
+    <template id="custom_website_sale_confirmation" inherit_id="website_sale.confirmation">
+        <xpath expr="//h1[1]" position="replace">
+          <h1><span>Pedido de venta #</span> <em t-field="order.name"/> 
+          <t t-if="order.state == 'sale'"><span>Confirmado</span></t>
+          <t t-if="order.state != 'sale'"><span>Pendiente de confirmar</span></t>
+          </h1>
+          <h4 t-if="order.payment_web_site.name == 'Crédito directo' and order.state == 'sale'">
+            <span>Su pedido ha sido confirmado</span>
+          </h4>
+          <h4 t-if="order.payment_web_site.name == 'Crédito directo' and order.state == 'sent'">
+            <span>Su pedido está pendiente de confirmación, estamos verificando su línea de crédito disponible. En breve nos comunicaremos con usted.</span>
+          </h4>
+        </xpath>
+    </template>
+
+</odoo>

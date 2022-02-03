@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ESTADO DE ENVIO -->
+    <record id="sale_stock.sale_order_portal_content_inherit_sale_stock" model="ir.ui.view">
+        <field name="arch" type="xml">
+        <data name="Orders Shipping Followup" inherit_id="sale.sale_order_portal_content">
+            <xpath expr="//div[@id='informations']" position="inside">
+
+            <div t-if="sale_order.is_quote" >
+                <strong>Estado del pedido</strong>
+                <img t-if="sale_order.state_quote == '01_pendiente_cliente'" class="img-fluid o_we_custom_image" src="/web/image/4367/Cotizaci%C3%B3n%20Enviada.jpg?access_token=a25f5e2c-0bb1-4ebd-9bdf-b43c1fcc7daa"/>
+                <img t-if="sale_order.state_quote == '02_aprobada_cliente'" class="img-fluid o_we_custom_image" src="/web/image/4368/Confirmaci%C3%B3n%20Pedido.jpg?access_token=707c519e-6d7f-4497-b8bf-6f289d29d4a8"/>
+                <img t-if="sale_order.state_quote == '03_produccion_pendiente'" class="img-fluid o_we_custom_image" src="/web/image/4369/Pago%20Anticipo.jpg?access_token=3fb78081-d14d-41d2-a9c0-11609d19916e"/>
+                <img t-if="sale_order.state_quote == '04_produccion_en_proceso'" class="img-fluid o_we_custom_image" src="/web/image/4371/Aprobaci%C3%B3n%20de%20Artes.jpg?access_token=4d842b1c-fde1-4caa-85e7-cd27460190d6"/>
+                <img t-if="sale_order.state_quote == '05_produccion_terminada'" class="img-fluid o_we_custom_image" src="/web/image/4374/Producci%C3%B3n%20Terminada.jpg?access_token=1123a003-9747-4023-a6a8-4047e67d9d72"/>
+                <img t-if="sale_order.state_quote == '06_entrega_aprobada'" class="img-fluid o_we_custom_image" src="/web/image/4372/Pago%20Final.jpg?access_token=58017486-10e4-4379-b4fe-7ac1a52ecbea"/>
+            </div>
+            
+
+            <div>
+                <strong>Estado de depacho</strong>
+                <span t-if="sale_order.state_shipping_erp == 'done'" class="small badge badge-success orders_label_text_align"><i class="fa fa-fw fa-truck"/> <b>Entregado</b></span>
+                <span t-if="sale_order.state_shipping_erp == 'partial'" class="small badge badge-success orders_label_text_align"><i class="fa fa-fw fa-truck"/> <b>Entrega parcial</b></span>
+                <!--<span t-if="sale_order.state == 'cancel'" class="small badge badge-danger orders_label_text_align"><i class="fa fa-fw fa-times"/> <b>Cancelled</b></span>-->
+                <span t-if="sale_order.state_shipping_erp in ['pending']" class="small badge badge-info orders_label_text_align"><i class="fa fa-fw fa-clock-o"/> <b>Pendiente</b></span>
+            </div>
+            <div>
+                <strong>Número de tracking</strong>
+                <a t-att-href="sale_order.tracking_url">
+                    <span ><b><t t-esc="sale_order.tracking_number"/></b></span>
+                </a>
+            </div>
+            </xpath>
+        </data>
+        </field>
+    </record>
+
+    <!-- VISTA ORIGINAL
+        <data name="Orders Shipping Followup" inherit_id="sale.sale_order_portal_content">
+        <xpath expr="//div[@id='so_date']" position="after">
+            <div class="row" t-if="sale_order.incoterm">
+                <div class="mb-3 col-6 ml-auto">
+                    <strong>Incoterm: </strong> <span t-field="sale_order.incoterm"/>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//div[@id='informations']" position="inside">
+            <t t-if="sale_order.picking_ids">
+                <div>
+                    <strong>Delivery Orders</strong>
+                </div>
+                <div>
+                    <t t-foreach="sale_order.picking_ids.filtered(lambda picking: picking.picking_type_id.code != 'internal')" t-as="i">
+                        <t t-set="delivery_report_url" t-value="'/my/picking/pdf/%s?%s' % (i.id, keep_query())"/>
+                        <div class="d-flex flex-wrap align-items-center justify-content-between o_sale_stock_picking">
+                            <div>
+                                <a t-att-href="delivery_report_url">
+                                    <span t-esc="i.name"/>
+                                </a>
+                                <div class="small d-lg-inline-block ml-3">Date: <span class="text-muted" t-field="i.date" t-options="{'date_only': True}"/></div>
+                            </div>
+                            <span t-if="i.state == 'done'" class="small badge badge-success orders_label_text_align"><i class="fa fa-fw fa-truck"/> <b>Shipped</b></span>
+                            <span t-if="i.state == 'cancel'" class="small badge badge-danger orders_label_text_align"><i class="fa fa-fw fa-times"/> <b>Cancelled</b></span>
+                            <span t-if="i.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge badge-info orders_label_text_align"><i class="fa fa-fw fa-clock-o"/> <b>Preparation</b></span>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+  </data>
+    -->
+     <!-- ESTADO DE ENVIO -->
+    <record id="delivery.sale_order_portal_content_inherit_sale_stock_inherit_website_sale_delivery" model="ir.ui.view">
+        <field name="active">False</field>
+    </record>
+
+</odoo>

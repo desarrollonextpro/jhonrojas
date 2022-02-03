@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <!-- Categorias especiales -->	
+	    <record id="view_custommodule_special_category_tree" model="ir.ui.view">
+            <field name="name">Categorias especiales</field>
+            <field name="model">custommodule.special_category</field>
+            <field name="arch" type="xml">
+                <tree string="Categorias especiales">
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+	    </record>        
+	    <record id="view_custommodule_special_category_form" model="ir.ui.view">
+            <field name="name">Categorias especiales</field>
+            <field name="model">custommodule.special_category</field>            
+            <field name="arch" type="xml">
+                <form string="Categorias especiales">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>                
+                </form>	
+            </field>
+	    </record>        
+
+	    <record model="ir.actions.act_window" id="custommodule.special_category_action">
+		    <field name="name">Categorias especiales</field>
+		    <field name="res_model">custommodule.special_category</field>
+		    <field name="view_mode">tree,form</field>
+	    </record>
+
+        <!-- Menu -->
+
+        <!--SUBSUBMENU: PLANTILLAS DE CONFIGURACION -->
+        <record id="custommodule.menu_settings_special_category" model="ir.ui.menu">
+            <field name="name">Categorias especiales</field>
+            <field name="action" ref="custommodule.special_category_action"/>
+            <field name="parent_id" ref="website.menu_website_global_configuration"/>
+        </record>
+      
+    </data>
+</openerp>

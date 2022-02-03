@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- To Repace Default Whishlist In Navbar -->
+    <template id="header_wishlist" inherit_id="website_sale_wishlist.header" name="Header Shop Wishlist Link">
+        <xpath expr="//li[hasclass('o_wsale_my_wish')]" position="replace">
+            <li class="nav-item o_wsale_my_wish" t-att-style="not wishcount and 'display:none;'">
+                <a href="/shop/wishlist" class="nav-link">
+                    <i class="fa fa-heart"/>
+                    Favoritos <sup t-attf-class="my_wish_quantity o_animate_blink badge badge-primary"><t t-esc="wishcount"/></sup>
+                </a>
+            </li>
+        </xpath>
+    </template>
+    
+</odoo>
