@@ -136,42 +136,57 @@ class SaleOrder(models.Model):
         # Username = "root"
         # Password = "password"
 
-        with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
+        try:
+
+            with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
+                _logger.info("""
+                            
+                            
+                            
+                            Connection successfully established ... 
+                            
+                            
+                            
+                            """)
+
+                # # Define a file that you want to upload from your local directory
+                # localFilePath = '/boot/initrd.img'
+
+                # # Define the remote path where the file will be uploaded
+                # remoteFilePath = '/mnt/initrd.img'
+
+                # Use put method to upload a file
+                sftp.put('./', ftp_pwd)
+
+                # Switch to a remote directory
+                sftp.cwd(ftp_pwd)
+
+                # Obtain structure of the remote directory '/opt'
+                directory_structure = sftp.listdir_attr()
+
+                # Print data
+                for attr in directory_structure:
+                    _logger.info(f"""
+                                
+                                
+                                {attr.filename}
+                                {attr}
+                                
+                                
+                                
+                                """)
+        except:
             _logger.info("""
-                         
-                         
-                         
-                         Connection successfully established ... 
-                         
-                         
-                         
-                         """)
 
-            # # Define a file that you want to upload from your local directory
-            # localFilePath = '/boot/initrd.img'
+                    ERROR
 
-            # # Define the remote path where the file will be uploaded
-            # remoteFilePath = '/mnt/initrd.img'
+                    """)
 
-            # Use put method to upload a file
-            sftp.put('./', ftp_pwd)
+        else:
+            _logger.info("""
 
-            # Switch to a remote directory
-            sftp.cwd(ftp_pwd)
+                    connect in else
 
-            # Obtain structure of the remote directory '/opt'
-            directory_structure = sftp.listdir_attr()
-
-            # Print data
-            for attr in directory_structure:
-                _logger.info(f"""
-                             
-                             
-                             {attr.filename}
-                             {attr}
-                             
-                             
-                             
-                             """)
+                    """)
 
         return super(SaleOrder, self).create(vals)
