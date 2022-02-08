@@ -96,27 +96,27 @@ class SaleOrder(models.Model):
 
         ftp_path_out = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_path_out', default="Figu123.."))
 
-        # Inicia un cliente SSH
+        # # Inicia un cliente SSH
 
-        ssh_client = paramiko.SSHClient()
+        # ssh_client = paramiko.SSHClient()
 
-        # Establecer política por defecto para localizar la llave del host localmente
+        # # Establecer política por defecto para localizar la llave del host localmente
 
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         # Conectarse
         # try:
-        ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
+        # ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
 
-        # ftp_client = ssh_client.open_sftp()
+        # # ftp_client = ssh_client.open_sftp()
 
-        # list_files = ftp_client.listdir(ftp_path_out)
+        # # list_files = ftp_client.listdir(ftp_path_out)
 
-        _logger.info("""
+        # _logger.info("""
 
-                connect in try
+        #         connect in try
 
-                """)
+        #         """)
 
         # except:
         #     _logger.info("""
@@ -136,50 +136,50 @@ class SaleOrder(models.Model):
         # Username = "root"
         # Password = "password"
 
-        # try:
+        try:
 
-        #     with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
-        #         _logger.info("""
+            with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd, port=21) as sftp:
+                _logger.info("""
 
-        #                     Connection successfully established ...
+                            Connection successfully established ...
 
-        #                     """)
+                            """)
 
-        #         # # Define a file that you want to upload from your local directory
-        #         # localFilePath = '/boot/initrd.img'
+                # # Define a file that you want to upload from your local directory
+                # localFilePath = '/boot/initrd.img'
 
-        #         # # Define the remote path where the file will be uploaded
-        #         # remoteFilePath = '/mnt/initrd.img'
+                # # Define the remote path where the file will be uploaded
+                # remoteFilePath = '/mnt/initrd.img'
 
-        #         # Use put method to upload a file
-        #         sftp.put('./', ftp_pwd)
+                # Use put method to upload a file
+                sftp.put('./', ftp_pwd)
 
-        #         # Switch to a remote directory
-        #         sftp.cwd(ftp_pwd)
+                # Switch to a remote directory
+                sftp.cwd(ftp_pwd)
 
-        #         # Obtain structure of the remote directory '/opt'
-        #         directory_structure = sftp.listdir_attr()
+                # Obtain structure of the remote directory '/opt'
+                directory_structure = sftp.listdir_attr()
 
-        #         # Print data
-        #         for attr in directory_structure:
-        #             _logger.info(f"""
+                # Print data
+                for attr in directory_structure:
+                    _logger.info(f"""
 
-        #                         {attr.filename}
-        #                         {attr}
+                                {attr.filename}
+                                {attr}
 
-        #                         """)
-        # except:
-        #     _logger.info("""
+                                """)
+        except:
+            _logger.info("""
 
-        #             ERROR
+                    ERROR
 
-        #             """)
+                    """)
 
-        # else:
-        #     _logger.info("""
+        else:
+            _logger.info("""
 
-        #             connect in else
+                    connect in else
 
-        #             """)
+                    """)
 
         return super(SaleOrder, self).create(vals)
