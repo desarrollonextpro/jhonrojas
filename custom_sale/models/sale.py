@@ -2,6 +2,8 @@ from odoo import fields, models, api
 from odoo.exceptions import ValidationError
 import paramiko
 import logging
+import pysftp
+# import fnmatch
 
 
 _logger = logging.getLogger(__name__)
@@ -94,46 +96,82 @@ class SaleOrder(models.Model):
 
         ftp_path_out = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_path_out', default="Figu123.."))
 
-        # Inicia un cliente SSH
+        # # Inicia un cliente SSH
 
-        ssh_client = paramiko.SSHClient()
+        # ssh_client = paramiko.SSHClient()
 
-        # Establecer política por defecto para localizar la llave del host localmente
+        # # Establecer política por defecto para localizar la llave del host localmente
 
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        # Conectarse
-        try:
-            ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
+        # # Conectarse
+        # try:
+        #     ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
 
-            # ftp_client = ssh_client.open_sftp()
+        #     # ftp_client = ssh_client.open_sftp()
 
-            # list_files = ftp_client.listdir(ftp_path_out)
+        #     # list_files = ftp_client.listdir(ftp_path_out)
 
+        #     _logger.info("""
+
+        #             connect in try
+
+        #             """)
+
+        # except:
+        #     _logger.info("""
+
+        #             ERROR
+
+        #             """)
+
+        # else:
+        #     _logger.info("""
+
+        #             connect in else
+
+        #             """)
+
+        Hostname = "remote-ip-address"
+        Username = "root"
+        Password = "password"
+
+        with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
             _logger.info("""
+                         
+                         
+                         
+                         Connection successfully established ... 
+                         
+                         
+                         
+                         """)
 
+            # # Define a file that you want to upload from your local directory
+            # localFilePath = '/boot/initrd.img'
 
-                    connect in try
+            # # Define the remote path where the file will be uploaded
+            # remoteFilePath = '/mnt/initrd.img'
 
+            # Use put method to upload a file
+            sftp.put('./', ftp_pwd)
 
-                    """)
+            # Switch to a remote directory
+            sftp.cwd(ftp_pwd)
 
-        except:
-            _logger.info("""
+            # Obtain structure of the remote directory '/opt'
+            directory_structure = sftp.listdir_attr()
 
-
-                    ERROR
-
-
-                    """)
-
-        else:
-            _logger.info("""
-
-
-                    connect in else
-
-
-                    """)
+            # Print data
+            for attr in directory_structure:
+                _logger.info(f"""
+                             
+                             
+                             {attr.filename}
+                             {attr}
+                             
+                             
+                             
+                             """)
 
         return super(SaleOrder, self).create(vals)
