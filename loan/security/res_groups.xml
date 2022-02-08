@@ -1,0 +1,9 @@
+<odoo>
+    <record id="module_loan" model="ir.module.category">
+        <field name="name">Prestamos</field>
+    </record>
+    <record id="res_groups_administrador" model="res.groups">
+        <field name="name">Acceso total a Prestamos</field>
+        <field name="category_id" ref="loan.module_loan"/>
+    </record>
+</odoo>

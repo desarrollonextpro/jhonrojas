@@ -8,6 +8,8 @@
         'base'
     ],
     'data': [
+        'security/res_groups.xml',
+        'security/ir_model_access.xml',
         'views/loan.xml'
     ],
     'auto_install': False,
