@@ -106,9 +106,9 @@ class SaleOrder(models.Model):
         try:
             ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd)
 
-            ftp_client = ssh_client.open_sftp()
+            # ftp_client = ssh_client.open_sftp()
 
-            list_files = ftp_client.listdir(ftp_path_out)
+            # list_files = ftp_client.listdir(ftp_path_out)
 
             _logger.info("""
 
