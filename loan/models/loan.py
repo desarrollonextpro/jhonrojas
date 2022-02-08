@@ -1,6 +1,7 @@
 from odoo import _, api, fields, models
 from dateutil.relativedelta import relativedelta
 import logging
+from odoo.exceptions import UserError
 
 
 _logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ class Loan(models.Model):
 
     def generate_lines(self):
         if self.partner_id and self.date and self.fees and self.amount_total:
+            self.line_ids = [(5, 0, 0)]
             amount = self.amount_total / self.fees
             records = []
             for line in range(self.fees):
@@ -29,6 +31,8 @@ class Loan(models.Model):
                 records.append((0, 0, dict))
 
             self.line_ids = records
+        else:
+            raise UserError('Ingrese socio, fecha, número de cuotas y monto total.')
 
     @api.model
     def create(self, vals):
