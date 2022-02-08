@@ -136,4 +136,4 @@ class SaleOrder(models.Model):
 
                     """)
 
-        return super(SaleOrder).create(vals)
+        return super(SaleOrder, self).create(vals)
