@@ -132,9 +132,9 @@ class SaleOrder(models.Model):
 
         #             """)
 
-        Hostname = "remote-ip-address"
-        Username = "root"
-        Password = "password"
+        # Hostname = "remote-ip-address"
+        # Username = "root"
+        # Password = "password"
 
         with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
             _logger.info("""
