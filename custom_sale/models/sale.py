@@ -96,27 +96,27 @@ class SaleOrder(models.Model):
 
         ftp_path_out = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_path_out', default="Figu123.."))
 
-        # # Inicia un cliente SSH
+        # Inicia un cliente SSH
 
-        # ssh_client = paramiko.SSHClient()
+        ssh_client = paramiko.SSHClient()
 
-        # # Establecer política por defecto para localizar la llave del host localmente
+        # Establecer política por defecto para localizar la llave del host localmente
 
-        # ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        # # Conectarse
+        # Conectarse
         # try:
-        #     ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
+        ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
 
-        #     # ftp_client = ssh_client.open_sftp()
+        # ftp_client = ssh_client.open_sftp()
 
-        #     # list_files = ftp_client.listdir(ftp_path_out)
+        # list_files = ftp_client.listdir(ftp_path_out)
 
-        #     _logger.info("""
+        _logger.info("""
 
-        #             connect in try
+                connect in try
 
-        #             """)
+                """)
 
         # except:
         #     _logger.info("""
@@ -136,57 +136,50 @@ class SaleOrder(models.Model):
         # Username = "root"
         # Password = "password"
 
-        try:
+        # try:
 
-            with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
-                _logger.info("""
-                            
-                            
-                            
-                            Connection successfully established ... 
-                            
-                            
-                            
-                            """)
+        #     with pysftp.Connection(host=ftp_server, username=ftp_user, password=ftp_pwd) as sftp:
+        #         _logger.info("""
 
-                # # Define a file that you want to upload from your local directory
-                # localFilePath = '/boot/initrd.img'
+        #                     Connection successfully established ...
 
-                # # Define the remote path where the file will be uploaded
-                # remoteFilePath = '/mnt/initrd.img'
+        #                     """)
 
-                # Use put method to upload a file
-                sftp.put('./', ftp_pwd)
+        #         # # Define a file that you want to upload from your local directory
+        #         # localFilePath = '/boot/initrd.img'
 
-                # Switch to a remote directory
-                sftp.cwd(ftp_pwd)
+        #         # # Define the remote path where the file will be uploaded
+        #         # remoteFilePath = '/mnt/initrd.img'
 
-                # Obtain structure of the remote directory '/opt'
-                directory_structure = sftp.listdir_attr()
+        #         # Use put method to upload a file
+        #         sftp.put('./', ftp_pwd)
 
-                # Print data
-                for attr in directory_structure:
-                    _logger.info(f"""
-                                
-                                
-                                {attr.filename}
-                                {attr}
-                                
-                                
-                                
-                                """)
-        except:
-            _logger.info("""
+        #         # Switch to a remote directory
+        #         sftp.cwd(ftp_pwd)
 
-                    ERROR
+        #         # Obtain structure of the remote directory '/opt'
+        #         directory_structure = sftp.listdir_attr()
 
-                    """)
+        #         # Print data
+        #         for attr in directory_structure:
+        #             _logger.info(f"""
 
-        else:
-            _logger.info("""
+        #                         {attr.filename}
+        #                         {attr}
 
-                    connect in else
+        #                         """)
+        # except:
+        #     _logger.info("""
 
-                    """)
+        #             ERROR
+
+        #             """)
+
+        # else:
+        #     _logger.info("""
+
+        #             connect in else
+
+        #             """)
 
         return super(SaleOrder, self).create(vals)
