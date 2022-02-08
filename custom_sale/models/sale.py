@@ -104,7 +104,7 @@ class SaleOrder(models.Model):
 
         # Conectarse
         try:
-            ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd)
+            ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd, banner_timeout=2000)
 
             # ftp_client = ssh_client.open_sftp()
 
