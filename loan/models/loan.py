@@ -36,5 +36,5 @@ class Loan(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name'] = "Prestamo de {(self.env['res.partner'].browse(vals.get('partner_id')).name or '')} en la fecha  {str(self.date)}"
+        vals['name'] = f"Prestamo de {self.env['res.partner'].browse(vals.get('partner_id')).name or ''} en la fecha  {str(self.date)}"
         return super(Loan, self).create(vals)
