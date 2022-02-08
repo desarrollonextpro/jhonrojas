@@ -23,8 +23,8 @@
                             <field name="amount_total"/>
                         </group>
                     </group>
-                    <field name="line_ids">
-                        <tree readonly="1">
+                    <field name="line_ids" readonly="1">
+                        <tree>
                             <field name="amount"/>
                             <field name="payment_date"/>
                         </tree>
