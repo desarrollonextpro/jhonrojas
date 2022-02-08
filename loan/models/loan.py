@@ -29,3 +29,8 @@ class Loan(models.Model):
                 records.append((0, 0, dict))
 
             self.line_ids = records
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env['res.partner'].browse(vals.get('partner_id')).name or ''
+        return super(Loan, self).create(vals)

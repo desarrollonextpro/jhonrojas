@@ -10,9 +10,11 @@
                     <button string="Generate loan" name="generate_lines" type="object" class="oe_highlight"/>
                 </header>
                 <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
                     <group>
                         <group>
-                            <field name="name"/>
                             <field name="partner_id"/>
                             <field name="date"/>
                         </group>
