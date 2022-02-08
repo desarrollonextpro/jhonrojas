@@ -5,7 +5,7 @@
     'author': 'Jhon Jairo Rojas Ortiz',
     'license': 'LGPL-3',
     'depends': [
-        'base'
+        'base', 'account_accountant'
     ],
     'data': [
         'security/res_groups.xml',

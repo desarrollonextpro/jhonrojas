@@ -68,5 +68,5 @@
         </field>
     </record>
     <!-- MenuItem -->
-    <menuitem id="loan_menu" name="Loan" action="loan_action" sequence="10312" groups="loan.res_groups_administrador"/>
+    <menuitem id="loan_menu" name="Loan" action="loan_action" sequence="10312" groups="loan.res_groups_administrador" parent='account.menu_finance'/>
 </odoo>
