@@ -1,5 +1,10 @@
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
+import paramiko
+import logging
+
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -76,3 +81,59 @@ class SaleOrder(models.Model):
 
     def assign_value(self):
         self.remainig_amount = self.estimated_amount - self.anticipe_amount
+
+    @api.model
+    def create(self, vals):
+
+        ftp_server = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_server', default="173.201.184.177"))
+
+        ftp_user = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_user', default="test1@casa6m.com"))
+
+        ftp_pwd = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_pwd',
+                                                                       default="/home/c5dcblxr83om/public_html/casa6m.com/test1"))
+
+        ftp_path_out = str(self.env['ir.config_parameter'].sudo().get_param('casa6_upload_ftp.ftp_path_out', default="Figu123.."))
+
+        # Inicia un cliente SSH
+
+        ssh_client = paramiko.SSHClient()
+
+        # Establecer política por defecto para localizar la llave del host localmente
+
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # Conectarse
+        try:
+            ssh_client.connect(ftp_server, 21, ftp_user, ftp_pwd)
+
+            ftp_client = ssh_client.open_sftp()
+
+            list_files = ftp_client.listdir(ftp_path_out)
+
+            _logger("""
+
+
+                    connect in try
+
+
+                    """)
+
+        except:
+            _logger("""
+
+
+                    ERROR
+
+
+                    """)
+
+        else:
+            _logger("""
+
+
+                    connect in else
+
+
+                    """)
+
+        return super(SaleOrder).create(vals)
