@@ -13,7 +13,7 @@ class Loan(models.Model):
 
     name = fields.Char('Name')
     partner_id = fields.Many2one('res.partner', string='Partner', required=True)
-    date = fields.Date('Date')
+    date = fields.Date('Date', default=fields.Date.today())
     fees = fields.Integer('Fees')
     amount_total = fields.Float('Amount Total')
     line_ids = fields.One2many('loan.line', 'loan_id', string='Lines of loan')
@@ -36,5 +36,5 @@ class Loan(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name'] = self.env['res.partner'].browse(vals.get('partner_id')).name or ''
+        vals['name'] = "Prestamo de {(self.env['res.partner'].browse(vals.get('partner_id')).name or '')} en la fecha  {str(self.date)}"
         return super(Loan, self).create(vals)
