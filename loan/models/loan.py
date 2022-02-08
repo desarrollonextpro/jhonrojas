@@ -27,7 +27,7 @@ class Loan(models.Model):
                 months = line+1
                 dict = {}
                 dict['amount'] = amount
-                dict['payment_date'] = self.date_order + relativedelta(months=months)
+                dict['payment_date'] = self.date + relativedelta(months=months)
                 records.append((0, 0, dict))
 
             self.line_ids = records
