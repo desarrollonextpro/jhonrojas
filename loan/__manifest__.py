@@ -1,11 +1,11 @@
 {
-    'name': 'Loans',
+    'name': 'Prestamos',
     'version': '1.0',
     'description': 'Loan for clients',
     'author': 'Jhon Jairo Rojas Ortiz',
     'license': 'LGPL-3',
     'depends': [
-        'base', 'account_accountant'
+        'base', 'account'
     ],
     'data': [
         'security/res_groups.xml',
