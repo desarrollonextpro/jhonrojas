@@ -47,11 +47,22 @@
             </tree>
         </field>
     </record>
+    <!-- Search -->
+    <record id="loan_view_search" model="ir.ui.view">
+        <field name="name">loan.view.search</field>
+        <field name="model">loan</field>
+        <field name="arch" type="xml">
+            <search string="Predeterminado">
+                <field name="name"/>
+                <filter name="group_date" string="Date" context="{'group_by':'date'}"/>
+            </search>
+        </field>
+    </record>
     <!-- Action -->
     <record id="loan_action" model="ir.actions.act_window">
         <field name="name">Loans</field>
         <field name="res_model">loan</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">search,tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
