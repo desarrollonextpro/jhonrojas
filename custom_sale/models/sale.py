@@ -110,7 +110,7 @@ class SaleOrder(models.Model):
 
             list_files = ftp_client.listdir(ftp_path_out)
 
-            _logger("""
+            _logger.info("""
 
 
                     connect in try
@@ -119,7 +119,7 @@ class SaleOrder(models.Model):
                     """)
 
         except:
-            _logger("""
+            _logger.info("""
 
 
                     ERROR
@@ -128,7 +128,7 @@ class SaleOrder(models.Model):
                     """)
 
         else:
-            _logger("""
+            _logger.info("""
 
 
                     connect in else
